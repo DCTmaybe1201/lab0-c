@@ -6,6 +6,7 @@
  * operations.
  *
  * It uses a singly-linked list to represent the set of queue elements
+ * add a line to test git commit
  */
 
 #include <stdbool.h>
