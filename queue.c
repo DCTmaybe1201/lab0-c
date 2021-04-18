@@ -15,6 +15,8 @@ queue_t *q_new()
     /* TODO: What if malloc returned NULL? */
     if (q != NULL) {
         q->head = NULL;
+        q->tail = NULL;
+        q->size = 0;
     }
     return q;
 }
@@ -57,6 +59,11 @@ bool q_insert_head(queue_t *q, char *s)
 
     newh->next = q->head;
     q->head = newh;
+
+    q->size++;
+    if (q->size == 1) {
+        q->tail = newh;
+    }
     return true;
 }
 
@@ -72,7 +79,31 @@ bool q_insert_tail(queue_t *q, char *s)
     /* TODO: You need to write the complete code for this function */
     /* Remember: It should operate in O(1) time */
     /* TODO: Remove the above comment when you are about to implement. */
-    return false;
+    if (q == NULL)
+        return false;
+
+    list_ele_t *newt;
+    newt = malloc(sizeof(list_ele_t));
+
+    if (newt == NULL)
+        return false;
+
+    size_t len = strlen(s);
+    char *news = malloc(sizeof(char) * (len + 1));
+    if (news == NULL) {
+        free(newt);
+        return false;
+    }
+
+    memcpy(news, s, len + 1);
+    newt->value = news;
+    // TODO need to add tail argument in queue.h
+    q->tail->next = newt;
+    newt->next = NULL;
+    q->tail = newt;
+    q->size++;
+
+    return true;
 }
 
 /*
@@ -95,6 +126,7 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
     }
 
     q->head = q->head->next;
+    q->size--;
     /* Free origin head element */
     free(reg->value);
     free(reg);
